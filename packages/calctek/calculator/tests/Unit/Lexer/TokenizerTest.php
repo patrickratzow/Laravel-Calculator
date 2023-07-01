@@ -97,4 +97,80 @@ class TokenizerTest extends TestCase
             new Token(TokenType::Separator, ')')
         ]);
     }
+
+    /** @test */
+    public function it_can_tokenize_addition()
+    {
+        // Arrange
+        $input = '2+5';
+        $tokenizer = new Tokenizer($input);
+
+        // Act
+        $tokenizer->tokenize();
+        $tokens = $tokenizer->getTokens()->toArray();
+
+        // Assert
+        $this->assertEquals($tokens, [
+            new Token(TokenType::Literal, 2),
+            new Token(TokenType::Operator, '+'),
+            new Token(TokenType::Literal, 5)
+        ]);
+    }
+
+    /** @test */
+    public function it_can_tokenize_subtraction()
+    {
+        // Arrange
+        $input = '2-5';
+        $tokenizer = new Tokenizer($input);
+
+        // Act
+        $tokenizer->tokenize();
+        $tokens = $tokenizer->getTokens()->toArray();
+
+        // Assert
+        $this->assertEquals($tokens, [
+            new Token(TokenType::Literal, 2),
+            new Token(TokenType::Operator, '-'),
+            new Token(TokenType::Literal, 5)
+        ]);
+    }
+
+    /** @test */
+    public function it_can_tokenize_multiplication()
+    {
+        // Arrange
+        $input = '2*5';
+        $tokenizer = new Tokenizer($input);
+
+        // Act
+        $tokenizer->tokenize();
+        $tokens = $tokenizer->getTokens()->toArray();
+
+        // Assert
+        $this->assertEquals($tokens, [
+            new Token(TokenType::Literal, 2),
+            new Token(TokenType::Operator, '*'),
+            new Token(TokenType::Literal, 5)
+        ]);
+    }
+
+    /** @test */
+    public function it_can_tokenize_division()
+    {
+        // Arrange
+        $input = '2/5';
+        $tokenizer = new Tokenizer($input);
+
+        // Act
+        $tokenizer->tokenize();
+        $tokens = $tokenizer->getTokens()->toArray();
+
+        // Assert
+        $this->assertEquals($tokens, [
+            new Token(TokenType::Literal, 2),
+            new Token(TokenType::Operator, '/'),
+            new Token(TokenType::Literal, 5)
+        ]);
+    }
 }
