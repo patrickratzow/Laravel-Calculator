@@ -12,7 +12,16 @@
     },
     "autoload": {
         "psr-4": {
-            "Calctek\\Calculator\\": "src/"
+            "CalcTek\\Calculator\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CalcTek\\Calculator\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.5",
+        "illuminate/support": "^10.14"
     }
 }
