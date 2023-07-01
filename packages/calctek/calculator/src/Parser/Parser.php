@@ -300,9 +300,18 @@ class Parser
         return $expression;
     }
 
+    /**
+     * @throws SyntaxException
+     */
     private function parseIdentifier(): IdentifierSyntaxNode
     {
-        $identifier = new IdentifierSyntaxNode($this->token->getValue());
+        $name = $this->token->getValue();
+        $function = Functions::tryFrom($name);
+        if (is_null($function)) {
+            throw new SyntaxException("$name is not a valid function");
+        }
+
+        $identifier = new IdentifierSyntaxNode($name);
         $this->next();
 
         return $identifier;

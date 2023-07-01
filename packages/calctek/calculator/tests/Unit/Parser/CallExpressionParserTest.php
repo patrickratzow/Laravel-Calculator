@@ -4,6 +4,7 @@ namespace CalcTek\Calculator\Tests\Unit\Parser;
 
 use CalcTek\Calculator\Lexer\Token;
 use CalcTek\Calculator\Lexer\TokenType;
+use CalcTek\Calculator\Parser\Functions;
 use CalcTek\Calculator\Parser\Nodes\BinaryExpressionSyntaxNode;
 use CalcTek\Calculator\Parser\Nodes\CallExpressionSyntaxNode;
 use CalcTek\Calculator\Parser\Nodes\IdentifierSyntaxNode;
@@ -21,7 +22,7 @@ class CallExpressionParserTest extends TestCase
     {
         // Arrange
         $input = collect([
-            new Token(TokenType::Identifier, 'sqrt'),
+            new Token(TokenType::Identifier, Functions::SquareRoot->value),
             new Token(TokenType::Separator, '('),
             new Token(TokenType::Literal, '2'),
             new Token(TokenType::Separator, ')'),
@@ -35,7 +36,7 @@ class CallExpressionParserTest extends TestCase
         // Assert
         $this->assertEquals(
             new CallExpressionSyntaxNode(
-                new IdentifierSyntaxNode('sqrt'),
+                new IdentifierSyntaxNode(Functions::SquareRoot->value),
                 new LiteralSyntaxNode('2')
             ),
             $ast
@@ -47,9 +48,9 @@ class CallExpressionParserTest extends TestCase
     {
         // Arrange
         $input = collect([
-            new Token(TokenType::Identifier, 'sqrt'),
+            new Token(TokenType::Identifier, Functions::SquareRoot->value),
             new Token(TokenType::Separator, '('),
-            new Token(TokenType::Identifier, 'sqrt'),
+            new Token(TokenType::Identifier, Functions::SquareRoot->value),
             new Token(TokenType::Separator, '('),
             new Token(TokenType::Literal, '2'),
             new Token(TokenType::Separator, ')'),
@@ -64,9 +65,9 @@ class CallExpressionParserTest extends TestCase
         // Assert
         $this->assertEquals(
             new CallExpressionSyntaxNode(
-                new IdentifierSyntaxNode('sqrt'),
+                new IdentifierSyntaxNode(Functions::SquareRoot->value),
                 new CallExpressionSyntaxNode(
-                    new IdentifierSyntaxNode('sqrt'),
+                    new IdentifierSyntaxNode(Functions::SquareRoot->value),
                     new LiteralSyntaxNode('2')
                 )
             ),
@@ -79,7 +80,7 @@ class CallExpressionParserTest extends TestCase
     {
         // Arrange
         $input = collect([
-            new Token(TokenType::Identifier, 'sqrt'),
+            new Token(TokenType::Identifier, Functions::SquareRoot->value),
             new Token(TokenType::Separator, '('),
             new Token(TokenType::Literal, '2'),
             new Token(TokenType::Operator, '+'),
@@ -95,7 +96,7 @@ class CallExpressionParserTest extends TestCase
         // Assert
         $this->assertEquals(
             new CallExpressionSyntaxNode(
-                new IdentifierSyntaxNode('sqrt'),
+                new IdentifierSyntaxNode(Functions::SquareRoot->value),
                 new BinaryExpressionSyntaxNode(
                     Operator::Plus,
                     new LiteralSyntaxNode('2'),
