@@ -18,12 +18,12 @@ class TokenizerTest extends TestCase
 
         // Act
         $tokenizer->tokenize();
-        $tokens = $tokenizer->getTokens()->toArray();
+        $tokens = $tokenizer->getTokens();
 
         // Assert
-        $this->assertEquals($tokens, [
+        $this->assertEquals(collect([
             new Token(TokenType::Literal, 1)
-        ]);
+        ]), $tokens);
     }
 
 
@@ -36,12 +36,12 @@ class TokenizerTest extends TestCase
 
         // Act
         $tokenizer->tokenize();
-        $tokens = $tokenizer->getTokens()->toArray();
+        $tokens = $tokenizer->getTokens();
 
         // Assert
-        $this->assertEquals($tokens, [
+        $this->assertEquals(collect([
             new Token(TokenType::Operator, '+')
-        ]);
+        ]), $tokens);
     }
 
     /** @test */
@@ -53,12 +53,12 @@ class TokenizerTest extends TestCase
 
         // Act
         $tokenizer->tokenize();
-        $tokens = $tokenizer->getTokens()->toArray();
+        $tokens = $tokenizer->getTokens();
 
         // Assert
-        $this->assertEquals($tokens, [
+        $this->assertEquals(collect([
             new Token(TokenType::Identifier, 'sqrt')
-        ]);
+        ]), $tokens);
     }
 
     /** @test */
@@ -70,12 +70,12 @@ class TokenizerTest extends TestCase
 
         // Act
         $tokenizer->tokenize();
-        $tokens = $tokenizer->getTokens()->toArray();
+        $tokens = $tokenizer->getTokens();
 
         // Assert
-        $this->assertEquals($tokens, [
+        $this->assertEquals(collect([
             new Token(TokenType::Separator, '(')
-        ]);
+        ]), $tokens);
     }
 
     /** @test */
@@ -87,15 +87,15 @@ class TokenizerTest extends TestCase
 
         // Act
         $tokenizer->tokenize();
-        $tokens = $tokenizer->getTokens()->toArray();
+        $tokens = $tokenizer->getTokens();
 
         // Assert
-        $this->assertEquals($tokens, [
+        $this->assertEquals(collect([
             new Token(TokenType::Identifier, 'sqrt'),
             new Token(TokenType::Separator, '('),
             new Token(TokenType::Literal, 5),
             new Token(TokenType::Separator, ')')
-        ]);
+        ]), $tokens);
     }
 
     /** @test */
@@ -107,14 +107,14 @@ class TokenizerTest extends TestCase
 
         // Act
         $tokenizer->tokenize();
-        $tokens = $tokenizer->getTokens()->toArray();
+        $tokens = $tokenizer->getTokens();
 
         // Assert
-        $this->assertEquals($tokens, [
+        $this->assertEquals(collect([
             new Token(TokenType::Literal, 2),
             new Token(TokenType::Operator, '+'),
             new Token(TokenType::Literal, 5)
-        ]);
+        ]), $tokens);
     }
 
     /** @test */
@@ -126,14 +126,14 @@ class TokenizerTest extends TestCase
 
         // Act
         $tokenizer->tokenize();
-        $tokens = $tokenizer->getTokens()->toArray();
+        $tokens = $tokenizer->getTokens();
 
         // Assert
-        $this->assertEquals($tokens, [
+        $this->assertEquals(collect([
             new Token(TokenType::Literal, 2),
             new Token(TokenType::Operator, '-'),
             new Token(TokenType::Literal, 5)
-        ]);
+        ]), $tokens);
     }
 
     /** @test */
@@ -145,14 +145,14 @@ class TokenizerTest extends TestCase
 
         // Act
         $tokenizer->tokenize();
-        $tokens = $tokenizer->getTokens()->toArray();
+        $tokens = $tokenizer->getTokens();
 
         // Assert
-        $this->assertEquals($tokens, [
+        $this->assertEquals(collect([
             new Token(TokenType::Literal, 2),
             new Token(TokenType::Operator, '*'),
             new Token(TokenType::Literal, 5)
-        ]);
+        ]), $tokens);
     }
 
     /** @test */
@@ -164,14 +164,14 @@ class TokenizerTest extends TestCase
 
         // Act
         $tokenizer->tokenize();
-        $tokens = $tokenizer->getTokens()->toArray();
+        $tokens = $tokenizer->getTokens();
 
         // Assert
-        $this->assertEquals($tokens, [
+        $this->assertEquals(collect([
             new Token(TokenType::Literal, 2),
             new Token(TokenType::Operator, '/'),
             new Token(TokenType::Literal, 5)
-        ]);
+        ]), $tokens);
     }
 
     /**
@@ -188,9 +188,9 @@ class TokenizerTest extends TestCase
 
         // Act
         $tokenizer->tokenize();
-        $tokens = $tokenizer->getTokens()->toArray();
+        $tokens = $tokenizer->getTokens();
 
         // Assert
-        $this->assertEquals($tokens, []);
+        $this->assertEmpty($tokens);
     }
 }
