@@ -8,6 +8,7 @@ enum Operator: int
     case Minus = 1;
     case Multiply = 2;
     case Divide = 3;
+    case Power = 4;
 
     /**
      * @throws SyntaxException
@@ -19,6 +20,7 @@ enum Operator: int
             '-' => Operator::Minus,
             '*' => Operator::Multiply,
             '/' => Operator::Divide,
+            '^' => Operator::Power,
             default => throw new SyntaxException("Invalid operator: $value")
         };
     }
