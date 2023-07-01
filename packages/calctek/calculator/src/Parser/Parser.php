@@ -9,6 +9,7 @@ use CalcTek\Calculator\Parser\Nodes\CallExpressionSyntaxNode;
 use CalcTek\Calculator\Parser\Nodes\IdentifierSyntaxNode;
 use CalcTek\Calculator\Parser\Nodes\LiteralSyntaxNode;
 use CalcTek\Calculator\Parser\Nodes\SyntaxNode;
+use CalcTek\Calculator\Parser\Nodes\UnaryExpressionSyntaxNode;
 use Illuminate\Support\Collection;
 
 class Parser
@@ -42,6 +43,10 @@ class Parser
      * @var int $position The current position in the tokens array
      */
     private int $position = 0;
+    /**
+     * @var int $parenthesesDepth The current depth of parentheses
+     */
+    private int $parenthesesDepth = 0;
 
     /**
      * @param Collection<Token> $tokens The tokens to parse
@@ -71,8 +76,11 @@ class Parser
     {
         $this->token = $this->tokens[0];
         $this->nextToken = $this->peek();
-        $ast = $this->parseTokens();
+        $ast = $this->parseExpression();
+        $this->skipRedundantParentheses();
         $this->ast = $ast;
+
+        //$this->dd();
 
         // Current token should be null after we are done parsing
         if (!is_null($this->token)) {
@@ -80,13 +88,16 @@ class Parser
         }
     }
 
-
     /**
-     * @throws \Exception
+     * @throws SyntaxException
      */
-    private function parseTokens(): SyntaxNode
+    private function parseExpression(): ?SyntaxNode
     {
         $expression = null;
+        // TODO: Deal with parentheses and order of operations
+        if ($this->token?->getType() === TokenType::Operator && $this->token?->getValue() === '-') {
+            $expression = $this->parseUnaryExpression();
+        }
         // Identifiers are easy to parse, do them first
         if ($this->token?->getType() === TokenType::Identifier) {
             $expression = $this->parseIdentifier();
@@ -101,8 +112,29 @@ class Parser
         return $expression;
     }
 
+    /**
+     * @throws SyntaxException
+     */
+    private function parseUnaryExpression(): ?UnaryExpressionSyntaxNode
+    {
+        if (!$this->consume(new Token(TokenType::Operator, '-'))) {
+            return null;
+        }
+
+        $operand = $this->parseExpression();
+        if (is_null($operand)) {
+            throw new SyntaxException('Expected expression after unary');
+        }
+
+        return new UnaryExpressionSyntaxNode(Operator::Minus, $operand);
+    }
+
+    /**
+     * @throws SyntaxException
+     */
     private function parseCallExpression(IdentifierSyntaxNode $identifier): CallExpressionSyntaxNode
     {
+        /* @var Collection<SyntaxNode> $arguments */
         $arguments = new Collection();
 
         if (!$this->consume(new Token(TokenType::Separator, '('))) {
@@ -110,14 +142,69 @@ class Parser
         }
 
         while ($this->token?->getType() !== TokenType::Separator) {
-            $arguments->push($this->parseTokens());
+            $expression = $this->parseExpression();
+
+            // Deal with cases where can't seem to parse it to an expression
+            if (is_null($expression)) {
+                // We are at the end of the input, we are missing a )
+                if (is_null($this->nextToken)) {
+                    throw new SyntaxException('Expected ) after function arguments');
+                }
+                // We can't parse an expression, so we can't parse the arguments
+
+                throw new SyntaxException('Unable to parse function arguments');
+            }
+
+            $arguments->push($expression);
         }
 
         if (!$this->consume(new Token(TokenType::Separator, ')'))) {
             throw new SyntaxException('Expected ) after function arguments');
         }
 
+        if ($arguments->isEmpty()) {
+            throw new SyntaxException('Expected at least 1 argument for a function call');
+        }
+
         return new CallExpressionSyntaxNode($identifier, $arguments);
+    }
+
+    /**
+     * Skips the remaining tokens if they are all right parentheses
+     *
+     * @return void
+     * @throws SyntaxException Thrown if there is a mismatched parentheses
+     */
+    public function skipRedundantParentheses(): void
+    {
+        // We need to check if the rest of tokens are only right parenthses.
+        // We are going to rule out redundant parentheses.
+        if ($this->token?->getType() !== TokenType::Separator
+            || $this->token?->getValue() !== ')'
+            || $this->parenthesesDepth != 0) {
+            return;
+        }
+
+        // Check if the rest of tokens are only right parentheses.
+        $isOnlyRightParentheses = true;
+        $tokenCount = $this->tokens->count();
+        for ($i = $this->position + 1; $i < $tokenCount && $isOnlyRightParentheses; $i++) {
+            $token = $this->tokens[$i];
+            if ($token->getType() === TokenType::Separator && $token->getValue() === ')') {
+                continue;
+            }
+
+            $isOnlyRightParentheses = false;
+        }
+
+        // If the rest of tokens are only right parentheses, we are going to rule out redundant parentheses.
+        if (!$isOnlyRightParentheses) {
+            throw new SyntaxException('Unexpected right parentheses');
+        }
+
+        $this->position = $tokenCount;
+        $this->token = null;
+        $this->nextToken = null;
     }
 
     private function parsePrefixExpression(): ?SyntaxNode
@@ -151,9 +238,9 @@ class Parser
                 // We skip the current literal & the operator here
                 $this->next();
                 $this->next();
-                $nextExpression = $this->parseTokens();
+                $nextExpression = $this->parseExpression();
 
-                $expression = new BinaryExpressionSyntaxNode($operator, $expression, $nextExpression);
+                $expression = new BinaryExpressionSyntaxNode(Operator::create($operator), $expression, $nextExpression);
             }
         } else {
             $this->next();
@@ -173,52 +260,6 @@ class Parser
         $this->next();
 
         return $identifier;
-    }
-
-    /**
-     * @throws \Exception
-     */
-    private function parseToken(): SyntaxNode
-    {
-        $token = $this->token;
-        $expression = $this->parseBinaryExpression($token);
-
-        if (is_null($expression)) {
-            // TODO: Bundle a lot more information for debugging purposes
-            throw new \Exception('Invalid token');
-        }
-
-        return $expression;
-    }
-
-    private function parseBinaryExpression(Token $token): ?BinaryExpressionSyntaxNode
-    {
-        $type = $token->getType();
-        if ($type === TokenType::Operator || $type === TokenType::Separator) {
-            return null;
-        }
-
-        $left = $this->parsePrimaryExpression();
-        if (is_null($left)) {
-            return null;
-        }
-
-        $operator = $this->isNextTokenOperator();
-        if (is_null($operator)) {
-            return null;
-        }
-
-        $right = $this->parsePrimaryExpression();
-        if (is_null($right)) {
-            return null;
-        }
-
-        return new BinaryExpressionSyntaxNode($operator->getValue(), $left, $right);
-    }
-
-    private function parsePrimaryExpression(): ?SyntaxNode
-    {
-        return null;
     }
 
     private function peek(int $offset = 1): ?Token
@@ -263,6 +304,7 @@ class Parser
             'previousToken' => $this->previousToken,
             'position' => $this->position,
             'tokens' => $this->tokens,
+            'ast' => $this->ast,
         ]));
     }
 }
