@@ -50,6 +50,9 @@
     },
     "extra": {
         "laravel": {
+            "providers": [
+                "CalcTek\\Calculator\\CalculatorServiceProvider"
+            ],
             "dont-discover": []
         }
     },

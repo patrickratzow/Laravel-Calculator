@@ -270,6 +270,9 @@ class Parser
         $this->next();
         $this->next();
         $rightExpression = $this->parseExpression();
+        if (is_null($rightExpression)) {
+            throw new SyntaxException('Expected expression after operator');
+        }
 
         return new BinaryExpressionSyntaxNode(Operator::create($operator), $leftExpression, $rightExpression);
     }

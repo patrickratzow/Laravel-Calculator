@@ -2,32 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use CalcTek\Calculator\Contracts\CalculatorService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CalculatorController extends Controller
 {
+    private CalculatorService $calculatorService;
+
+    public function __construct(CalculatorService $calculatorService)
+    {
+        $this->calculatorService = $calculatorService;
+    }
+
     public function index(Request $request): JsonResponse
     {
         $input = $request->query('input');
 
         if (empty($input)) {
-            return Response()
+            return response()
                 ->json([
                     'error' => 'No input provided',
                 ])
                 ->setStatusCode(400);
         }
 
-        return Response()
+        $result = $this->calculatorService->calculate($input);
+
+        return response()
             ->json([
-                'result' => $this->calculate($input),
+                'result' => $result
             ])
             ->setStatusCode(200);
-    }
-
-    private function calculate(string $input): float
-    {
-        return 0;
     }
 }

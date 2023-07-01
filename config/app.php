@@ -159,6 +159,7 @@ return [
         /*
          * Package Service Providers...
          */
+        CalcTek\Calculator\Providers\CalculatorServiceProvider::class,
 
         /*
          * Application Service Providers...
