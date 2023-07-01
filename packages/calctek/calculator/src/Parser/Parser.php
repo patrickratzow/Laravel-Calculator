@@ -57,22 +57,9 @@ class Parser
     }
 
     /**
-     * @return SyntaxNode The parsed syntax nodes
-     * @throws \Exception Thrown if there is no AST
+     * @throws SyntaxException Thrown if the input is invalid
      */
-    public function getAST(): SyntaxNode
-    {
-        if (is_null($this->ast)) {
-            throw new \Exception('No AST');
-        }
-
-        return $this->ast;
-    }
-
-    /**
-     * @throws \Exception Thrown if the input is invalid
-     */
-    public function parse(): void
+    public function parse(): SyntaxNode
     {
         $this->token = $this->tokens[0];
         $this->nextToken = $this->peek();
@@ -80,11 +67,12 @@ class Parser
         $this->skipRedundantParentheses();
         $this->ast = $ast;
 
-        //$this->dd();
         // Current token should be null after we are done parsing
         if (!is_null($this->token)) {
-            throw new \Exception('Expected end of input');
+            throw new SyntaxException('Expected end of input');
         }
+
+        return $this->ast;
     }
 
     /**

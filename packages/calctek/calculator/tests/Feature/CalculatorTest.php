@@ -19,9 +19,9 @@ class CalculatorTest extends TestCase
         // Arrange
         $input = 'sqrt((((9*9)/12)+(13-4))*2)^2)';
         $lexer = new Lexer();
-        $parser = new Parser($lexer->tokenize($input));
-        $parser->parse();
-        $ast = $parser->getAST();
+        $parser = new Parser($lexer->lex($input));
+        $ast = $parser->parse();
+
         $evaluator = new Evaluator();
 
         // Act

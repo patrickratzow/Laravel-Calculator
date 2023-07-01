@@ -55,8 +55,7 @@ class ParserTest extends TestCase
         $parser = new Parser($input);
 
         // Act
-        $parser->parse();
-        $ast = $parser->getAST();
+        $ast = $parser->parse();
 
         // Assert
         $this->assertEquals(
@@ -105,8 +104,7 @@ class ParserTest extends TestCase
         $parser = new Parser($input);
 
         // Act
-        $parser->parse();
-        $ast = $parser->getAST();
+        $ast = $parser->parse();
 
         // Assert
         $this->assertEquals(
@@ -133,8 +131,7 @@ class ParserTest extends TestCase
         $parser = new Parser($input);
 
         // Act
-        $parser->parse();
-        $ast = $parser->getAST();
+        $ast = $parser->parse();
 
         // Assert
         $this->assertEquals(

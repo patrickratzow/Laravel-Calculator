@@ -15,11 +15,10 @@ class CalcTekCalculatorService implements CalculatorService
     public function calculate(string $input): float
     {
         $lexer = new Lexer();
-        $tokens = $lexer->tokenize($input);
+        $tokens = $lexer->lex($input);
 
         $parser = new Parser($tokens);
-        $parser->parse();
-        $ast = $parser->getAST();
+        $ast = $parser->parse();
 
         $evaluator = new Evaluator();
         return $evaluator->evaluate($ast);
