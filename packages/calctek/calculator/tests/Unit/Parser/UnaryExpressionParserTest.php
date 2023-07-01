@@ -11,6 +11,7 @@ use CalcTek\Calculator\Parser\Nodes\LiteralSyntaxNode;
 use CalcTek\Calculator\Parser\Nodes\UnaryExpressionSyntaxNode;
 use CalcTek\Calculator\Parser\Operator;
 use CalcTek\Calculator\Parser\Parser;
+use CalcTek\Calculator\Parser\SyntaxException;
 use Orchestra\Testbench\TestCase;
 
 class UnaryExpressionParserTest extends TestCase
@@ -92,13 +93,28 @@ class UnaryExpressionParserTest extends TestCase
                 Operator::Minus,
                 new CallExpressionSyntaxNode(
                     new IdentifierSyntaxNode('sqrt'),
-                    collect([
-                        new LiteralSyntaxNode('2')
-                    ])
+                    new LiteralSyntaxNode('2')
                 ),
             ),
             $ast
         );
     }
 
+    /** @test */
+    public function it_can_error_when_unexpected_unary_operator_is_attempted()
+    {
+        // Arrange
+        $input = collect([
+            new Token(TokenType::Operator, '+'),
+            new Token(TokenType::Literal, '2'),
+        ]);
+        $parser = new Parser($input);
+
+        // Assert
+        $this->expectException(SyntaxException::class);
+        $this->expectExceptionMessage('Unexpected before an unary expression');
+
+        // Act
+        $parser->parse();
+    }
 }

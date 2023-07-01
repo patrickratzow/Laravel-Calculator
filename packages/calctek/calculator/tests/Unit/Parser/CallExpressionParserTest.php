@@ -36,9 +36,7 @@ class CallExpressionParserTest extends TestCase
         $this->assertEquals(
             new CallExpressionSyntaxNode(
                 new IdentifierSyntaxNode('sqrt'),
-                collect([
-                    new LiteralSyntaxNode('2')
-                ])
+                new LiteralSyntaxNode('2')
             ),
             $ast
         );
@@ -67,14 +65,10 @@ class CallExpressionParserTest extends TestCase
         $this->assertEquals(
             new CallExpressionSyntaxNode(
                 new IdentifierSyntaxNode('sqrt'),
-                collect([
-                    new CallExpressionSyntaxNode(
-                        new IdentifierSyntaxNode('sqrt'),
-                        collect([
-                            new LiteralSyntaxNode('2')
-                        ])
-                    ),
-                ])
+                new CallExpressionSyntaxNode(
+                    new IdentifierSyntaxNode('sqrt'),
+                    new LiteralSyntaxNode('2')
+                )
             ),
             $ast
         );
@@ -102,13 +96,11 @@ class CallExpressionParserTest extends TestCase
         $this->assertEquals(
             new CallExpressionSyntaxNode(
                 new IdentifierSyntaxNode('sqrt'),
-                collect([
-                    new BinaryExpressionSyntaxNode(
-                        Operator::Plus,
-                        new LiteralSyntaxNode('2'),
-                        new LiteralSyntaxNode('2')
-                    ),
-                ])
+                new BinaryExpressionSyntaxNode(
+                    Operator::Plus,
+                    new LiteralSyntaxNode('2'),
+                    new LiteralSyntaxNode('2')
+                ),
             ),
             $ast
         );
