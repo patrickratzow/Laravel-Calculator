@@ -125,12 +125,12 @@ class BinaryExpressionParserTest extends TestCase
         $this->assertEquals(
             new BinaryExpressionSyntaxNode(
                 Operator::Multiply,
-                new LiteralSyntaxNode('5'),
                 new BinaryExpressionSyntaxNode(
                     Operator::Plus,
                     new LiteralSyntaxNode('2'),
                     new LiteralSyntaxNode('2')
-                )
+                ),
+                new LiteralSyntaxNode('5'),
             ),
             $ast
         );

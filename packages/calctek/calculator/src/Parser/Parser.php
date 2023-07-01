@@ -173,8 +173,8 @@ class Parser
         if ($this->token?->getType() === TokenType::Operator) {
             $operator = Operator::create($this->token->getValue());
             $this->next();
-            $left = $this->parseExpression();
-            $expression = new BinaryExpressionSyntaxNode($operator, $left, $expression);
+            $right = $this->parseExpression();
+            $expression = new BinaryExpressionSyntaxNode($operator, $expression, $right);
         }
 
         return $expression;
@@ -206,8 +206,8 @@ class Parser
             && is_a($expression,BinaryExpressionSyntaxNode::class)) {
             $operator = Operator::create($this->token->getValue());
             $this->next();
-            $left = $this->parseExpression();
-            $expression = new BinaryExpressionSyntaxNode($operator, $left, $expression);
+            $right = $this->parseExpression();
+            $expression = new BinaryExpressionSyntaxNode($operator, $expression, $right);
         }
 
         return $expression;
