@@ -8,8 +8,20 @@ use Illuminate\Support\Str;
 
 class Tokenizer
 {
-    // Whitespace regex
+    /**
+     * @var string Regex for whitespaces
+     */
     private const WHITESPACE_REGEX = '/\s+/';
+
+    /**
+     * @var string Regex for numbers
+     */
+    private const NUMBER_REGEX = '/[0-9]/';
+
+    /**
+     * @var string Regex for identifiers
+     */
+    private const IDENTIFIER_REGEX = '/[a-zA-Z_0-9]/';
 
     /**
      * @var int The current position the cursor is at
@@ -38,6 +50,8 @@ class Tokenizer
     }
 
     /**
+     * Gets the tokens from tokenizer
+     *
      * @return Collection<Token> The tokens that have been found
      */
     public function getTokens(): Collection
@@ -46,8 +60,10 @@ class Tokenizer
     }
 
     /**
+     * Tokenizes the input string
+     *
      * @return void
-     * @throws Exception
+     * @throws Exception If the input string is invalid
      */
     public function tokenize(): void
     {
@@ -57,6 +73,11 @@ class Tokenizer
         }
     }
 
+    /**
+     * Tries to advance the cursor
+     *
+     * @return bool Whether the cursor can advance
+     */
     private function moveNext(): bool
     {
         $this->trimSpaces();
@@ -82,6 +103,9 @@ class Tokenizer
     }
 
     /**
+     * Reads the current token
+     *
+     * @return Token The current token that's being read
      * @throws Exception If no token is found
      */
     private function readToken(): Token {
@@ -98,8 +122,6 @@ class Tokenizer
      */
     private function trimSpaces(): void
     {
-        $inputLength = strlen($this->input);
-
         while ($this->canAdvance()
             && Str::match(self::WHITESPACE_REGEX, $this->input[$this->position])) {
             // We found a whitespace, skip it
@@ -107,15 +129,20 @@ class Tokenizer
         }
     }
 
+    /**
+     * Resets the current token
+     *
+     * @return void
+     */
     private function resetCurrentToken(): void
     {
         $this->currentToken = null;
     }
 
-    private const NUMBER_REGEX = '/[0-9]/';
-    private const IDENTIFIER_REGEX = '/[a-zA-Z_0-9]/';
-
     /**
+     * Scans for the identifier and pushes it to the currentToken if found
+     * This will also advance the cursor if an identifier is found
+     *
      * @return bool Whether a literal was found
      */
     private function scanIdentifier(): bool
@@ -148,38 +175,12 @@ class Tokenizer
         return true;
     }
 
-    private function consume(string $text): bool
-    {
-        // If the text is longer than the remaining input, we can't consume it
-        if (strlen($text) > (strlen($this->input) - $this->position)) {
-            return false;
-        }
-
-        $textCutout = substr($this->input, $this->position, strlen($text));
-        // If we found a match for the text, advance the cursor
-        if ($textCutout === $text) {
-            $this->advance(strlen($text));
-
-            return true;
-        }
-
-        return false;
-    }
-
-    private function advance(int $length = 1): void
-    {
-        $this->position += $length;
-    }
-
-    private function canAdvance(int $length = 1): bool
-    {
-        // We have to -1 the length as we are already at a character, which itself is 1 in length.
-        $currentPosition = $this->position + ($length - 1);
-        $length = strlen($this->input);
-
-        return $currentPosition < $length;
-    }
-
+    /**
+     * Scans for the literal and pushes it to the currentToken if found
+     * This will also advance the cursor if a literal is found
+     *
+     * @return bool Whether a separator was found
+     */
     private function scanLiteral(): bool
     {
         $number = $this->parseNumber();
@@ -192,6 +193,12 @@ class Tokenizer
         return true;
     }
 
+    /**
+     * Scans for operators and pushes it to the currentToken if found
+     * This will also advance the cursor if an operator is found
+     *
+     * @return bool Whether an operator was found
+     */
     private function scanOperator(): bool
     {
         if ($this->consume('+')) {
@@ -218,6 +225,34 @@ class Tokenizer
         return false;
     }
 
+    /**
+     * Scans for separators and pushes it to the currentToken if found
+     * This will also advance the cursor if a separator is found
+     *
+     * @return bool Whether a separator was found
+     */
+    private function scanSeparators(): bool
+    {
+        if ($this->consume('(')) {
+            $this->currentToken = new Token(TokenType::Separator, '(');
+
+            return true;
+        }
+        if ($this->consume(')')) {
+            $this->currentToken = new Token(TokenType::Separator, ')');
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Tries to parse data at the current position as a number
+     * This will also advance the cursor if a number is found
+     *
+     * @return string|null The number that was parsed, or null if no number was found
+     */
     private function parseNumber(): string|null
     {
         $buffer = '';
@@ -254,12 +289,14 @@ class Tokenizer
                 continue;
             }
 
+            // If we encounter a number, we add it to the buffer and advance
             if (Str::match(self::NUMBER_REGEX, $character)) {
                 $buffer .= $character;
                 $this->advance();
 
                 continue;
             }
+
             // A whitespace is considered a complete break for the number
             if (Str::match(self::WHITESPACE_REGEX, $character)) {
                 $this->advance();
@@ -267,23 +304,31 @@ class Tokenizer
                 break;
             }
 
-
-
+            // If we encounter anything else, we are done with the number
             break;
         }
 
         return $buffer;
     }
 
-    private function scanSeparators(): bool
+    /**
+     * Tries to "consume" the given text.
+     * If the next text in the buffer matches the given text, the cursor is advanced and true is returned.
+     *
+     * @param string $text The text to consume
+     * @return bool Whether the text was found
+     */
+    private function consume(string $text): bool
     {
-        if ($this->consume('(')) {
-            $this->currentToken = new Token(TokenType::Separator, '(');
-
-            return true;
+        // If the text is longer than the remaining input, we can't consume it
+        if (strlen($text) > (strlen($this->input) - $this->position)) {
+            return false;
         }
-        if ($this->consume(')')) {
-            $this->currentToken = new Token(TokenType::Separator, ')');
+
+        $textCutout = substr($this->input, $this->position, strlen($text));
+        // If we found a match for the text, advance the cursor
+        if ($textCutout === $text) {
+            $this->advance(strlen($text));
 
             return true;
         }
@@ -291,6 +336,38 @@ class Tokenizer
         return false;
     }
 
+    /**
+     * Advances the cursor by the given length
+     *
+     * @param int $length The length to advance the cursor by
+     * @return void
+     */
+    private function advance(int $length = 1): void
+    {
+        $this->position += $length;
+    }
+
+    /**
+     * Checks if the cursor can advance by the given length
+     *
+     * @param int $length The length to check for
+     * @return bool Whether the cursor can advance by the given length
+     */
+    private function canAdvance(int $length = 1): bool
+    {
+        // We have to -1 the length as we are already at a character, which itself is 1 in length.
+        $currentPosition = $this->position + ($length - 1);
+        $length = strlen($this->input);
+
+        return $currentPosition < $length;
+    }
+
+    /**
+     * Peeks the next characters in the buffer by the given length
+     *
+     * @param int $length The length to peek
+     * @return string|null The next characters in the buffer, or null if the cursor can't advance by the given length
+     */
     private function peek(int $length = 1): ?string
     {
         if (!$this->canAdvance($length)) {
