@@ -110,7 +110,7 @@ class UnaryExpressionParserTest extends TestCase
 
         // Assert
         $this->expectException(SyntaxException::class);
-        $this->expectExceptionMessage('Unexpected before an unary expression');
+        $this->expectExceptionMessage('Unexpected operator before an unary expression');
 
         // Act
         $parser->parse();
