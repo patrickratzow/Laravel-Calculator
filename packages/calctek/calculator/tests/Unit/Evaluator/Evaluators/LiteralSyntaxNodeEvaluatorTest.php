@@ -23,7 +23,6 @@ class LiteralSyntaxNodeEvaluatorTest extends TestCase
     }
 
     /** @test */
-    /** @test */
     public function it_can_evaluate_a_literal_syntax_node_with_decimal_number()
     {
         // Arrange
