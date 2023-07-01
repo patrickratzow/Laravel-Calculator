@@ -89,7 +89,7 @@ class Parser
                 $expression = $this->parseUnaryExpression();
             } else {
                 // Only -5 is valid, +5 is not a valid expression
-                throw new SyntaxException('Unexpected before an unary expression');
+                throw new SyntaxException('Unexpected operator before an unary expression');
             }
         }
         // Identifiers are easy to parse, do them first
