@@ -62,31 +62,31 @@ class ParserTest extends TestCase
         $this->assertEquals(
             new BinaryExpressionSyntaxNode(
                 Operator::Power,
-                new LiteralSyntaxNode('2'),
                 new CallExpressionSyntaxNode(
                     new IdentifierSyntaxNode(Functions::SquareRoot->value),
                     new BinaryExpressionSyntaxNode(
                         Operator::Multiply,
-                        new LiteralSyntaxNode('2'),
                         new BinaryExpressionSyntaxNode(
                             Operator::Plus,
                             new BinaryExpressionSyntaxNode(
-                                Operator::Minus,
-                                new LiteralSyntaxNode('13'),
-                                new LiteralSyntaxNode('4')
-                            ),
-                            new BinaryExpressionSyntaxNode(
                                 Operator::Divide,
-                                new LiteralSyntaxNode('12'),
                                 new BinaryExpressionSyntaxNode(
                                     Operator::Multiply,
                                     new LiteralSyntaxNode('9'),
                                     new LiteralSyntaxNode('9')
                                 ),
+                                new LiteralSyntaxNode('12'),
                             ),
-                        )
+                            new BinaryExpressionSyntaxNode(
+                                Operator::Minus,
+                                new LiteralSyntaxNode('13'),
+                                new LiteralSyntaxNode('4')
+                            ),
+                        ),
+                        new LiteralSyntaxNode('2'),
                     )
-                )
+                ),
+                new LiteralSyntaxNode('2'),
             ),
             $ast
         );
