@@ -13,13 +13,10 @@ class UnaryExpressionSyntaxNode extends SyntaxNode
     private SyntaxNode $operand;
 
     /**
-     * @param string $value The text value of the node
      * @param SyntaxNode $operand The operand of the unary expression
      */
-    public function __construct(string $value, SyntaxNode $operand)
+    public function __construct(SyntaxNode $operand)
     {
-        parent::__construct($value);
-
         $this->operand = $operand;
     }
 

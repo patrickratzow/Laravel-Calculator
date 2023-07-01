@@ -11,19 +11,31 @@ use Illuminate\Support\Collection;
 class CallExpressionSyntaxNode extends SyntaxNode
 {
     /**
+     * @var IdentifierSyntaxNode $identifier The identifier of the function
+     */
+    private IdentifierSyntaxNode $identifier;
+
+    /**
      * @var Collection<SyntaxNode> The arguments of the function
      */
     private Collection $arguments;
 
     /**
-     * @param string $value The text value of the node
+     * @param IdentifierSyntaxNode $identifier The identifier of the function
      * @param Collection<SyntaxNode> $arguments The arguments of the function
      */
-    public function __construct(string $value, Collection $arguments)
+    public function __construct(IdentifierSyntaxNode $identifier, Collection $arguments)
     {
-        parent::__construct($value);
-
+        $this->identifier = $identifier;
         $this->arguments = $arguments;
+    }
+
+    /**
+     * @return IdentifierSyntaxNode The identifier of the function
+     */
+    public function getIdentifier(): IdentifierSyntaxNode
+    {
+        return $this->identifier;
     }
 
     /**
