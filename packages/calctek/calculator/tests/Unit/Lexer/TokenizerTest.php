@@ -173,4 +173,24 @@ class TokenizerTest extends TestCase
             new Token(TokenType::Literal, 5)
         ]);
     }
+
+    /**
+     * Any consumer of this package should check for empty input themselves
+     * However we want to ensure we don't crash their application despite their stupidity
+     *
+     * @test
+     */
+    public function it_wont_error_on_empty_input()
+    {
+        // Arrange
+        $input = '';
+        $tokenizer = new Tokenizer($input);
+
+        // Act
+        $tokenizer->tokenize();
+        $tokens = $tokenizer->getTokens()->toArray();
+
+        // Assert
+        $this->assertEquals($tokens, []);
+    }
 }
