@@ -7,12 +7,12 @@ use Illuminate\Support\Collection;
 class Lexer
 {
     /**
-     * @param string $input The input to tokenize
+     * @param string $input The input to lex
      *
      * @return Collection<Token> The tokens
-     * @throws \Exception Thrown if the input is invalid
+     * @throws LexingException Thrown if the input is invalid
      */
-    public function tokenize(string $input): Collection
+    public function lex(string $input): Collection
     {
         $tokenizer = new Tokenizer($input);
         $tokenizer->tokenize();

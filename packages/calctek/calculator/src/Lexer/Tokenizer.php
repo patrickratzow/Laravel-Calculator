@@ -2,7 +2,6 @@
 
 namespace CalcTek\Calculator\Lexer;
 
-use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -63,7 +62,7 @@ class Tokenizer
      * Tokenizes the input string
      *
      * @return void
-     * @throws Exception If the input string is invalid
+     * @throws LexingException If the input string is invalid
      */
     public function tokenize(): void
     {
@@ -97,8 +96,13 @@ class Tokenizer
             return true;
         }
 
-        // TODO: Do we need to throw an exception here?
-        // We were unable to identity what we are dealing with, so we can't move further
+        // There is nothing of further use, do not continue
+        // The reason we don't throw anything here is because this is NOT a leftover state
+        // It's a valid state, just not a state we can do anything with
+        //
+        // This can happen when we have a string like "1 + 1 " and we're at the end of the string
+        // We can't do anything with the space, but it's not an error. And strlen($this->input) above didn't catch it
+        // because we trimmed the spaces before
         $this->resetCurrentToken();
         return false;
     }
@@ -107,11 +111,11 @@ class Tokenizer
      * Reads the current token
      *
      * @return Token The current token that's being read
-     * @throws Exception If no token is found
+     * @throws LexingException If no token is found
      */
     private function readToken(): Token {
         if (empty($this->currentToken)) {
-            throw new Exception("No token found, call moveNext() first");
+            throw new LexingException("No token found, call moveNext() first");
         }
 
         return $this->currentToken;
