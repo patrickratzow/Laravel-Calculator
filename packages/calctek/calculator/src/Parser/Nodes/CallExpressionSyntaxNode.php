@@ -16,18 +16,18 @@ class CallExpressionSyntaxNode extends SyntaxNode
     private IdentifierSyntaxNode $identifier;
 
     /**
-     * @var Collection<SyntaxNode> The arguments of the function
+     * @var SyntaxNode The arguments of the function
      */
-    private Collection $arguments;
+    private SyntaxNode $argument;
 
     /**
      * @param IdentifierSyntaxNode $identifier The identifier of the function
-     * @param Collection<SyntaxNode> $arguments The arguments of the function
+     * @param SyntaxNode $arguments The argument of the function
      */
-    public function __construct(IdentifierSyntaxNode $identifier, Collection $arguments)
+    public function __construct(IdentifierSyntaxNode $identifier, SyntaxNode $argument)
     {
         $this->identifier = $identifier;
-        $this->arguments = $arguments;
+        $this->argument = $argument;
     }
 
     /**
@@ -39,10 +39,10 @@ class CallExpressionSyntaxNode extends SyntaxNode
     }
 
     /**
-     * @return Collection<SyntaxNode> The arguments of the function
+     * @return SyntaxNode The argument of the function
      */
-    public function getArguments(): Collection
+    public function getArgument(): SyntaxNode
     {
-        return $this->arguments;
+        return $this->argument;
     }
 }
