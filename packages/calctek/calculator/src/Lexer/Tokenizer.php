@@ -222,6 +222,11 @@ class Tokenizer
 
             return true;
         }
+        if ($this->consume('^')) {
+            $this->currentToken = new Token(TokenType::Operator, '^');
+
+            return true;
+        }
 
         return false;
     }
