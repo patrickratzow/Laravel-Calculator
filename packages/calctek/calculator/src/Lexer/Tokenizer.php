@@ -97,6 +97,7 @@ class Tokenizer
             return true;
         }
 
+        // TODO: Do we need to throw an exception here?
         // We were unable to identity what we are dealing with, so we can't move further
         $this->resetCurrentToken();
         return false;
