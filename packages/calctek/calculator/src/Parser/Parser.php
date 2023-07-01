@@ -159,10 +159,7 @@ class Parser
 
         $expression = new CallExpressionSyntaxNode($identifier, $expression);
         if ($this->token?->getType() === TokenType::Operator) {
-            $operator = Operator::create($this->token->getValue());
-            $this->next();
-            $right = $this->parseExpression();
-            $expression = new BinaryExpressionSyntaxNode($operator, $expression, $right);
+            $expression = $this->parseBinaryExpression($expression);
         }
 
         return $expression;
@@ -192,10 +189,7 @@ class Parser
         // After the end of the parentheses, we want to look out for possible binary expressions
         if ($this->token?->getType() == TokenType::Operator
             && is_a($expression,BinaryExpressionSyntaxNode::class)) {
-            $operator = Operator::create($this->token->getValue());
-            $this->next();
-            $right = $this->parseExpression();
-            $expression = new BinaryExpressionSyntaxNode($operator, $expression, $right);
+            $expression = $this->parseBinaryExpression($expression);
         }
 
         return $expression;
@@ -247,22 +241,15 @@ class Parser
      */
     public function parseBinaryExpression(SyntaxNode $leftExpression): BinaryExpressionSyntaxNode|null
     {
-        if ($this->nextToken?->getType() !== TokenType::Operator) {
-            $this->next();
-
-            return null;
-        }
-
-        $operator = $this->nextToken->getValue();
-        // We skip the current literal & the operator here
-        $this->next();
+        $operator = Operator::create($this->token->getValue());
+        // We skip the current the operator here
         $this->next();
         $rightExpression = $this->parseExpression();
         if (is_null($rightExpression)) {
             throw new SyntaxException('Expected expression after operator');
         }
 
-        return new BinaryExpressionSyntaxNode(Operator::create($operator), $leftExpression, $rightExpression);
+        return new BinaryExpressionSyntaxNode($operator, $leftExpression, $rightExpression);
     }
 
     /**
@@ -283,9 +270,12 @@ class Parser
             throw new SyntaxException('Unexpected open parentheses immediately after a literal');
         }
 
-        $binaryExpression = $this->parseBinaryExpression($expression);
-        if (!is_null($binaryExpression)) {
-            $expression = $binaryExpression;
+        $this->next();
+        if ($this->token?->getType() === TokenType::Operator) {
+            $binaryExpression = $this->parseBinaryExpression($expression);
+            if (!is_null($binaryExpression)) {
+                $expression = $binaryExpression;
+            }
         }
 
         return $expression;
