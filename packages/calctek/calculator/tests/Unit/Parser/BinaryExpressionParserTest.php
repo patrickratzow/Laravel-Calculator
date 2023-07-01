@@ -1,31 +1,29 @@
 <?php
 
-
 namespace CalcTek\Calculator\Tests\Unit\Parser;
 
 use CalcTek\Calculator\Lexer\Token;
 use CalcTek\Calculator\Lexer\TokenType;
 use CalcTek\Calculator\Parser\Nodes\BinaryExpressionSyntaxNode;
+use CalcTek\Calculator\Parser\Nodes\CallExpressionSyntaxNode;
+use CalcTek\Calculator\Parser\Nodes\IdentifierSyntaxNode;
 use CalcTek\Calculator\Parser\Nodes\LiteralSyntaxNode;
+use CalcTek\Calculator\Parser\Nodes\UnaryExpressionSyntaxNode;
 use CalcTek\Calculator\Parser\Operator;
 use CalcTek\Calculator\Parser\Parser;
+use CalcTek\Calculator\Parser\SyntaxException;
 use Orchestra\Testbench\TestCase;
 
-/**
- * Generic tests that do not fit in any other file
- */
-class ParserTest extends TestCase
+class BinaryExpressionParserTest extends TestCase
 {
     /** @test */
-    public function it_can_ignore_extra_right_parenthesis()
+    public function it_can_parse_a_binary_expression()
     {
         // Arrange
         $input = collect([
             new Token(TokenType::Literal, '2'),
             new Token(TokenType::Operator, '+'),
-            new Token(TokenType::Literal, '2'),
-            new Token(TokenType::Separator, ')')
-
+            new Token(TokenType::Literal, '2')
         ]);
         $parser = new Parser($input);
 
