@@ -27,7 +27,15 @@ class CalculatorController extends Controller
                 ->setStatusCode(400);
         }
 
-        $result = $this->calculatorService->calculate($input);
+        try {
+            $result = $this->calculatorService->calculate($input);
+        } catch (\Throwable $e) {
+            return response()
+                ->json([
+                    'error' => $e->getMessage(),
+                ])
+                ->setStatusCode(400);
+        }
 
         return response()
             ->json([
