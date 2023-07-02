@@ -92,7 +92,6 @@ class Parser
                 throw new SyntaxException('Unexpected operator before an unary expression');
             }
         }
-        // Identifiers are easy to parse, do them first
         if ($this->token?->getType() === TokenType::Identifier) {
             $expression = $this->parseIdentifier();
 
