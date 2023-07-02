@@ -21,6 +21,10 @@ class LiteralSyntaxNodeEvaluator extends SyntaxNodeEvaluator
     public function evaluate(SyntaxNode $node): float
     {
         /* @var LiteralSyntaxNode $node */
+        if ($node->getValue() === 'pi') {
+            return pi();
+        }
+
         return (float)$node->getValue();
     }
 }

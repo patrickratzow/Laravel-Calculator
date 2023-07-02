@@ -30,13 +30,11 @@ class CallExpressionSyntaxNodeEvaluator extends SyntaxNodeEvaluator
 
         return match ($function) {
             Functions::SquareRoot => $this->squareRoot($argumentValue),
+            Functions::Logarithm => log10($argumentValue),
             default => throw new EvaluationException("Unknown function: $functionName")
         };
     }
 
-    /**
-     * @inheritdoc
-     */
     private function squareRoot(float $value): float
     {
         if ($value < 0) {
@@ -46,3 +44,4 @@ class CallExpressionSyntaxNodeEvaluator extends SyntaxNodeEvaluator
         return sqrt($value);
     }
 }
+

@@ -83,10 +83,10 @@ class Tokenizer
         if ($this->position >= strlen($this->input)) {
             return false;
         }
-        if ($this->scanIdentifier()) {
+        if ($this->scanLiteral()) {
             return true;
         }
-        if ($this->scanLiteral()) {
+        if ($this->scanIdentifier()) {
             return true;
         }
         if ($this->scanOperator()) {
@@ -188,6 +188,12 @@ class Tokenizer
      */
     private function scanLiteral(): bool
     {
+        if ($this->consume('pi')) {
+            $this->currentToken = new Token(TokenType::Literal, 'pi');
+
+            return true;
+        }
+
         $number = $this->parseNumber();
         if (empty($number)) {
             return false;
