@@ -228,6 +228,25 @@ class TokenizerTest extends TestCase
         ]), $tokens);
     }
 
+    /** @test */
+    public function it_can_tokenize_zeros()
+    {
+        // Arrange
+        $input = '25/0';
+        $tokenizer = new Tokenizer($input);
+
+        // Act
+        $tokenizer->tokenize();
+        $tokens = $tokenizer->getTokens();
+
+        // Assert
+        $this->assertEquals(collect([
+            new Token(TokenType::Literal, 25),
+            new Token(TokenType::Operator, '/'),
+            new Token(TokenType::Literal, 0)
+        ]), $tokens);
+    }
+
     /**
      * Any consumer of this package should check for empty input themselves
      * However we want to ensure we don't crash their application despite their stupidity

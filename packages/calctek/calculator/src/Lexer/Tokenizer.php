@@ -195,7 +195,7 @@ class Tokenizer
         }
 
         $number = $this->parseNumber();
-        if (empty($number)) {
+        if (!is_numeric($number)) {
             return false;
         }
 

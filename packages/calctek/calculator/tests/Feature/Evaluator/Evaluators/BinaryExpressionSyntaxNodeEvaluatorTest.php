@@ -2,6 +2,7 @@
 
 namespace CalcTek\Calculator\Tests\Feature\Evaluator\Evaluators;
 
+use CalcTek\Calculator\Evaluator\EvaluationException;
 use CalcTek\Calculator\Evaluator\Evaluator;
 use CalcTek\Calculator\Evaluator\Evaluators\BinaryExpressionSyntaxNodeEvaluator;
 use CalcTek\Calculator\Parser\Nodes\BinaryExpressionSyntaxNode;
@@ -123,5 +124,25 @@ class BinaryExpressionSyntaxNodeEvaluatorTest extends TestCase
 
         // Assert
         $this->assertEquals(25, $result);
+    }
+
+    /** @test */
+    public function it_can_evaluate_a_binary_expression_syntax_node_that_divides_by_zero()
+    {
+        // Arrange
+        $node = new BinaryExpressionSyntaxNode(
+            Operator::Divide,
+            new LiteralSyntaxNode('25'),
+            new LiteralSyntaxNode('0'),
+        );
+        $evaluator = new BinaryExpressionSyntaxNodeEvaluator();
+        $evaluator->setEvaluator(new Evaluator());
+
+        // Assert
+        $this->expectException(EvaluationException::class);
+        $this->expectExceptionMessage('Cannot divide by zero.');
+
+        // Act
+        $evaluator->evaluate($node);
     }
 }

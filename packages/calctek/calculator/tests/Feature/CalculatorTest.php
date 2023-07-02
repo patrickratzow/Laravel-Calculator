@@ -25,11 +25,12 @@ class CalculatorTest extends TestCase
         // Assert
         $this->assertEquals(31.5, $result);
     }
+
     /**
      * @test
      * @dataProvider randomExpressions
      */
-    public function it_can_evaluate_input($input, $expected)
+    public function it_can_calculate_input($input, $expected)
     {
         // Arrange
         $lexer = new Lexer();
