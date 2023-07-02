@@ -31,6 +31,12 @@ class CalculatorController extends Controller
 
         try {
             $result = $this->calculatorService->calculate($input);
+
+            return response()
+                ->json([
+                    'result' => $result
+                ])
+                ->setStatusCode(200);
         } catch (Throwable $e) {
             return response()
                 ->json([
@@ -38,17 +44,5 @@ class CalculatorController extends Controller
                 ])
                 ->setStatusCode(400);
         }
-
-        $calculation = new Calculation([
-            'input' => $input,
-            'result' => $result,
-        ]);
-        $calculation->save();
-
-        return response()
-            ->json([
-                'result' => $result
-            ])
-            ->setStatusCode(200);
     }
 }
