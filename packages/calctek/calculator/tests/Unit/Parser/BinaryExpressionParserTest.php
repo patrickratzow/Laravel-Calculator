@@ -6,6 +6,7 @@ use CalcTek\Calculator\Lexer\Token;
 use CalcTek\Calculator\Lexer\TokenType;
 use CalcTek\Calculator\Parser\Nodes\BinaryExpressionSyntaxNode;
 use CalcTek\Calculator\Parser\Nodes\LiteralSyntaxNode;
+use CalcTek\Calculator\Parser\Nodes\UnaryExpressionSyntaxNode;
 use CalcTek\Calculator\Parser\Operator;
 use CalcTek\Calculator\Parser\Parser;
 use Orchestra\Testbench\TestCase;
@@ -36,6 +37,36 @@ class BinaryExpressionParserTest extends TestCase
             $ast
         );
     }
+
+    /** @test */
+    public function it_can_parse_a_binary_expression_with_a_unary_expression()
+    {
+        // Arrange
+        $input = collect([
+            new Token(TokenType::Operator, '-'),
+            new Token(TokenType::Literal, '1'),
+            new Token(TokenType::Operator, '+'),
+            new Token(TokenType::Literal, '10.5')
+        ]);
+        $parser = new Parser($input);
+
+        // Act
+        $ast = $parser->parse();
+
+        // Assert
+        $this->assertEquals(
+            new BinaryExpressionSyntaxNode(
+                Operator::Plus,
+                new UnaryExpressionSyntaxNode(
+                    Operator::Minus,
+                    new LiteralSyntaxNode('1')
+                ),
+                new LiteralSyntaxNode('10.5'),
+            ),
+            $ast
+        );
+    }
+
 
     /** @test */
     public function it_can_parse_a_binary_expression_with_precedence()

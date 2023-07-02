@@ -109,10 +109,19 @@ class Parser
     /**
      * @throws SyntaxException
      */
-    private function parseUnaryExpression(): ?UnaryExpressionSyntaxNode
+    private function parseUnaryExpression(): ?SyntaxNode
     {
         if (!$this->consume(new Token(TokenType::Operator, '-'))) {
             return null;
+        }
+
+        // If the next token is an operator, we are inside a binary expression
+        if ($this->nextToken?->getType() === TokenType::Operator) {
+            $literal = new LiteralSyntaxNode($this->token->getValue());
+            $this->next();
+            $unary = new UnaryExpressionSyntaxNode(Operator::Minus, $literal);
+
+            return $this->parseBinaryExpression($unary);
         }
 
         $operand = $this->parseExpression();

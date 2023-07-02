@@ -128,7 +128,7 @@ class Tokenizer
     private function trimSpaces(): void
     {
         while ($this->canAdvance()
-            && Str::match(self::WHITESPACE_REGEX, $this->input[$this->position])) {
+            && Str::isMatch(self::WHITESPACE_REGEX, $this->input[$this->position])) {
             // We found a whitespace, skip it
             $this->advance();
         }
@@ -154,11 +154,11 @@ class Tokenizer
     {
         $character = $this->input[$this->position];
         // Can't start with a number, but after that it's okay
-        if (Str::match(self::NUMBER_REGEX, $character)) {
+        if (Str::isMatch(self::NUMBER_REGEX, $character)) {
             return false;
         }
         // Must match the regex for identifiers
-        if (!Str::match(self::IDENTIFIER_REGEX, $character)) {
+        if (!Str::isMatch(self::IDENTIFIER_REGEX, $character)) {
             return false;
         }
 
@@ -167,7 +167,7 @@ class Tokenizer
 
         while ($this->canAdvance()) {
             $currentCharacter = $this->input[$this->position];
-            if (!Str::match(self::IDENTIFIER_REGEX, $currentCharacter)) {
+            if (!Str::isMatch(self::IDENTIFIER_REGEX, $currentCharacter)) {
                 break;
             }
 
@@ -274,7 +274,7 @@ class Tokenizer
             // We need to ENSURE we are dealing with a number, so we go 1 character ahead
             $nextChar = $this->peek();
             // This could be an operator? It's not our responsibility to find out, return null
-            if (empty($nextChar) || !Str::match(self::NUMBER_REGEX, $nextChar)) {
+            if (empty($nextChar) || !Str::isMatch(self::NUMBER_REGEX, $nextChar)) {
                 return null;
             }
 
@@ -300,7 +300,7 @@ class Tokenizer
             }
 
             // If we encounter a number, we add it to the buffer and advance
-            if (Str::match(self::NUMBER_REGEX, $character)) {
+            if (Str::isMatch(self::NUMBER_REGEX, $character)) {
                 $buffer .= $character;
                 $this->advance();
 
@@ -308,7 +308,7 @@ class Tokenizer
             }
 
             // A whitespace is considered a complete break for the number
-            if (Str::match(self::WHITESPACE_REGEX, $character)) {
+            if (Str::isMatch(self::WHITESPACE_REGEX, $character)) {
                 $this->advance();
 
                 break;
