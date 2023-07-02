@@ -13,7 +13,7 @@
         @vite(['resources/js/app.js', 'resources/css/app.css'])
     </head>
 
-    <body class="antialiased h-full">
+    <body class="antialiased md:h-full">
         <div class="relative h-full" id="app"></div>
     </body>
 </html>

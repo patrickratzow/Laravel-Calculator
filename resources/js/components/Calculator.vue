@@ -1,39 +1,90 @@
 <script setup>
 import { ref, reactive, computed } from "vue";
-import { useCalculator } from "../composables/useCalculator";
 import CalculatorButton from "./CalculatorButton.vue";
+import axios from "axios";
 
-const calculator = useCalculator();
 const input = reactive([]);
 const lastInput = reactive([]);
 const result = ref(null);
+const error = ref(null);
+const history = reactive([]);
+
+async function fetchCalculate(input) {
+    try {
+        const response = await axios.get('/api/calculator', {
+            params: {
+                input
+            }
+        });
+
+        return {
+            success: true,
+            payload: {
+                result: response.data.result,
+            }
+        }
+    } catch (e) {
+        return {
+            success: false,
+            payload: {
+                error: e.response.data.error,
+            }
+        }
+    }
+}
+
+function addToHistory(input, result) {
+    history.push({
+        input,
+        result
+    })
+}
 
 async function calculate() {
     const inputSnapshot = [...input];
     const string = input.join("");
-    const calculationResult = await calculator.calculate(string);
+    const calculationResult = await fetchCalculate(string);
+    if (!calculationResult.success) {
+        error.value = calculationResult.payload.error;
+
+        return;
+    }
 
     clear();
     lastInput.splice(0, lastInput.length);
     lastInput.push(...inputSnapshot);
-    input.push(calculationResult.result);
+    input.push(calculationResult.payload.result);
+
+    addToHistory(string, calculationResult.payload.result);
+}
+
+function resetError() {
+    error.value = null;
 }
 
 function pushToInput(value) {
+    resetError();
+
     input.push(value);
 }
 
 function clear() {
+    resetError();
+
     // Cannot just reassign due to reactivity
     lastInput.splice(0, lastInput.length);
     input.splice(0, input.length);
 }
 
 function popFromInput() {
+    resetError();
+
     input.pop();
 }
 
 function surround(text) {
+    resetError();
+
     input.unshift("(");
     input.unshift(text);
     if (input.length === 2) return;
@@ -87,17 +138,29 @@ const formattedInput = computed(() => formatExpressions(input));
 </script>
 
 <template>
-    <div class="flex flex-col bg-primary rounded-lg p-4 max-w-[20rem]">
+    <div class="flex flex-col bg-primary rounded-lg p-4 max-w-[20rem] min-h-[33rem] justify-between">
         <div class="flex flex-col text-white text-right">
-            <div v-if="lastInput.length" class="text-gray-300 text-sm mb-2">
-                {{ formattedLastInput }}
+            <div v-if="error" class="text-red-500 text-md">
+                {{ error }}
             </div>
-            <div class="text-4xl">
-                <input v-if="input.length" class="w-full text-right bg-transparent active:outline-none" :value="formattedInput" readonly/>
-                <span class="text-gray-300" v-else> 0 </span>
-            </div>
+            <template v-else>
+                <div v-if="formattedLastInput.length" class="text-gray-300 text-sm mb-2">
+                    {{ formattedLastInput }}
+                </div>
+                <div
+                    class="text-4xl"
+                    :class="{ 'mt-4': !formattedLastInput.length }">
+                    <input
+                        v-if="formattedInput.length"
+                        class="w-full text-right bg-transparent active:outline-none"
+                        :value="formattedInput"
+                        readonly
+                    />
+                    <span class="text-gray-300" v-else>0</span>
+                </div>
+            </template>
         </div>
-        <div class="grid grid-rows-6 grid-flow-col gap-x-3 gap-y-2 mt-1">
+        <div class="grid grid-rows-6 grid-flow-col gap-x-3 gap-y-2">
             <!-- First column-->
             <CalculatorButton variant="small" @click="pushToInput('^')">^</CalculatorButton>
             <CalculatorButton variant="clear" @click="clear">C</CalculatorButton>
