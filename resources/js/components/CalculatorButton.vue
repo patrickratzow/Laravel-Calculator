@@ -13,26 +13,28 @@ const props = defineProps({
 });
 
 const classes = computed(() => {
+    // TODO: This is a mess.. but it's not terrible really
     const arr = [
-        props.variant == "small" ? "p-0" : "p-2",
-        props.variant == "highlight"
+        props.variant === "highlight"
             ? "text-white"
-            : props.variant == "success"
+            : props.variant === "success"
             ? "text-white"
+            : props.variant === "clear"
+            ? "text-dark-red"
             : "text-gray-100",
-        props.variant == "highlight"
-            ? "bg-orange-400"
-            : props.variant == "success"
-            ? "bg-green-400"
-            : props.variant == "clear" 
-            ? "bg-red-400"
-            : "bg-gray-700",
-        props.variant === "small" ? "text-xs" : "text-xl",
+        props.variant === "highlight"
+            ? "bg-orange"
+            : props.variant === "success"
+            ? "bg-green"
+            : props.variant === "clear"
+            ? "bg-dark-red-translucent"
+            : "bg-secondary",
+        props.variant === "small" ? "text-md" : "text-xl",
         props.variant === "small" ? null : "w-16",
     ];
     if (props.variant === "small") {
         arr.push("mt-5");
-        arr.push("h-6");
+        arr.push("h-11");
     }
 
     return arr;
@@ -41,6 +43,8 @@ const classes = computed(() => {
 
 <template>
     <button class="rounded-full font-semibold" :class="[classes]" @click="props.click">
-        <slot></slot>
+        <span class="p-0">
+            <slot></slot>
+        </span>
     </button>
 </template>

@@ -38,6 +38,10 @@ function surround(text) {
     input.unshift(text);
     if (input.length === 2) return;
 
+    // A hack to not surround things like log(8+ completely
+    const lastValue = input[input.length - 1];
+    if (isNaN(lastValue)) return;
+
     // If it's not just 'text(' then we need to add a closing bracket
     input.push(")");
 }
@@ -71,7 +75,7 @@ const formatExpressions = (expression) => {
             const number = parseFloat(value);
             if (isNaN(number)) return value;
 
-            return number.toLocaleString("en-US");
+            return number.toLocaleString();
         })
         .join("")
         // Add spaces around operations
@@ -85,10 +89,10 @@ const formattedInput = computed(() => formatExpressions(input));
 <template>
     <div class="flex flex-col bg-gray-950 rounded-lg p-4">
         <div class="flex flex-col text-white text-right">
-            <div v-if="lastInput.length" class="text-gray-300 text-xs mb-1">
+            <div v-if="lastInput.length" class="text-gray-300 text-sm mb-2">
                 {{ formattedLastInput }}
             </div>
-            <div class="text-2xl">
+            <div class="text-4xl">
                 <span v-if="input.length">
                     {{ formattedInput }}
                 </span>
