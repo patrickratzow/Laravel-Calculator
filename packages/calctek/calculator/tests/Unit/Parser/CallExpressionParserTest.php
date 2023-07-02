@@ -9,10 +9,8 @@ use CalcTek\Calculator\Parser\Nodes\BinaryExpressionSyntaxNode;
 use CalcTek\Calculator\Parser\Nodes\CallExpressionSyntaxNode;
 use CalcTek\Calculator\Parser\Nodes\IdentifierSyntaxNode;
 use CalcTek\Calculator\Parser\Nodes\LiteralSyntaxNode;
-use CalcTek\Calculator\Parser\Nodes\UnaryExpressionSyntaxNode;
 use CalcTek\Calculator\Parser\Operator;
 use CalcTek\Calculator\Parser\Parser;
-use CalcTek\Calculator\Parser\SyntaxException;
 use Orchestra\Testbench\TestCase;
 
 class CallExpressionParserTest extends TestCase
@@ -43,7 +41,7 @@ class CallExpressionParserTest extends TestCase
     }
 
     /** @test */
-    public function it_can_parse_a_nested__call()
+    public function it_can_parse_a_nested_call()
     {
         // Arrange
         $input = collect([

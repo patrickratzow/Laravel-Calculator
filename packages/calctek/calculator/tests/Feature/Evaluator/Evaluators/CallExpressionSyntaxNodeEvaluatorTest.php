@@ -49,4 +49,22 @@ class CallExpressionSyntaxNodeEvaluatorTest extends TestCase
         // Act
         $evaluator->evaluate($node);
     }
+
+    /** @test */
+    public function it_can_evaluate_a_call_expression_syntax_node_with_log()
+    {
+        // Arrange
+        $node = new CallExpressionSyntaxNode(
+            new IdentifierSyntaxNode(Functions::Logarithm->value),
+            new LiteralSyntaxNode('10')
+        );
+        $evaluator = new CallExpressionSyntaxNodeEvaluator();
+        $evaluator->setEvaluator(new Evaluator());
+
+        // Act
+        $result = $evaluator->evaluate($node);
+
+        // Assert
+        $this->assertEquals(log10(10), $result);
+    }
 }

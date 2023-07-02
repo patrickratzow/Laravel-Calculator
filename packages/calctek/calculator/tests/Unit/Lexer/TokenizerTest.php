@@ -26,6 +26,22 @@ class TokenizerTest extends TestCase
         ]), $tokens);
     }
 
+    /** @test */
+    public function it_can_tokenize_pi_as_a_literal()
+    {
+        // Arrange
+        $input = 'pi';
+        $tokenizer = new Tokenizer($input);
+
+        // Act
+        $tokenizer->tokenize();
+        $tokens = $tokenizer->getTokens();
+
+        // Assert
+        $this->assertEquals(collect([
+            new Token(TokenType::Literal, 'pi')
+        ]), $tokens);
+    }
 
     /** @test */
     public function it_can_tokenize_an_operator()

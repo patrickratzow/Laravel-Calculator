@@ -35,4 +35,18 @@ class LiteralSyntaxNodeEvaluatorTest extends TestCase
         // Assert
         $this->assertEquals(2.5, $result);
     }
+
+    /** @test */
+    public function it_can_evaluate_a_literal_syntax_node_that_is_pi()
+    {
+        // Arrange
+        $node = new LiteralSyntaxNode('pi');
+        $evaluator = new LiteralSyntaxNodeEvaluator();
+
+        // Act
+        $result = $evaluator->evaluate($node);
+
+        // Assert
+        $this->assertEquals(pi(), $result);
+    }
 }
