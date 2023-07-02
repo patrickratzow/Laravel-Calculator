@@ -6,10 +6,6 @@ const props = defineProps({
         type: String,
         default: "default",
     },
-    click: {
-        type: Function,
-        required: true,
-    },
 });
 
 const classes = computed(() => {
@@ -42,7 +38,7 @@ const classes = computed(() => {
 </script>
 
 <template>
-    <button class="rounded-full font-semibold" :class="[classes]" @click="props.click">
+    <button class="rounded-full font-semibold shadow-md hover:opacity-75 hover:shadow-lg" :class="[classes]">
         <span class="p-0">
             <slot></slot>
         </span>

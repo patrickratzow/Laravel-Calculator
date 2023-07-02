@@ -87,23 +87,19 @@ const formattedInput = computed(() => formatExpressions(input));
 </script>
 
 <template>
-    <div class="flex flex-col bg-gray-950 rounded-lg p-4">
+    <div class="flex flex-col bg-primary rounded-lg p-4 max-w-[20rem]">
         <div class="flex flex-col text-white text-right">
             <div v-if="lastInput.length" class="text-gray-300 text-sm mb-2">
                 {{ formattedLastInput }}
             </div>
             <div class="text-4xl">
-                <span v-if="input.length">
-                    {{ formattedInput }}
-                </span>
+                <input v-if="input.length" class="w-full text-right bg-transparent active:outline-none" :value="formattedInput" readonly/>
                 <span class="text-gray-300" v-else> 0 </span>
             </div>
         </div>
         <div class="grid grid-rows-6 grid-flow-col gap-x-3 gap-y-2 mt-1">
             <!-- First column-->
-            <CalculatorButton variant="small" @click="pushToInput('^')"
-                >^</CalculatorButton
-            >
+            <CalculatorButton variant="small" @click="pushToInput('^')">^</CalculatorButton>
             <CalculatorButton variant="clear" @click="clear">C</CalculatorButton>
             <CalculatorButton @click="pushToInput('7')">7</CalculatorButton>
             <CalculatorButton @click="pushToInput('4')">4</CalculatorButton>
@@ -132,9 +128,7 @@ const formattedInput = computed(() => formatExpressions(input));
             <CalculatorButton variant="highlight" @click="pushToInput('*')">*</CalculatorButton>
             <CalculatorButton variant="highlight" @click="pushToInput('-')">-</CalculatorButton>
             <CalculatorButton variant="highlight" @click="pushToInput('+')">+</CalculatorButton>
-            <CalculatorButton variant="success" @click="calculate">
-                =
-            </CalculatorButton>
+            <CalculatorButton variant="success" @click="calculate">=</CalculatorButton>
         </div>
     </div>
 </template>
