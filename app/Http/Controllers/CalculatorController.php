@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Calculation;
 use CalcTek\Calculator\Contracts\CalculatorService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Throwable;
 
 class CalculatorController extends Controller
 {
@@ -29,13 +31,19 @@ class CalculatorController extends Controller
 
         try {
             $result = $this->calculatorService->calculate($input);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return response()
                 ->json([
                     'error' => $e->getMessage(),
                 ])
                 ->setStatusCode(400);
         }
+
+        $calculation = new Calculation([
+            'input' => $input,
+            'result' => $result,
+        ]);
+        $calculation->save();
 
         return response()
             ->json([
