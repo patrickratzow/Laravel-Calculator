@@ -1,8 +1,29 @@
 <script setup>
 import CalculatorButton from "./CalculatorButton.vue";
 import { useCalculator } from "../composables/useCalculator.js";
+import { onMounted } from "vue";
 
 const calculator = useCalculator();
+
+onMounted(() => {
+    document.addEventListener('keydown', (e) => {
+        if (e.Handled) return;
+        e.Handled = true;
+
+        // Check if key is 0-9
+        if (e.key.match(/^[0-9]+$/)) calculator.push(e.key);
+        if (e.key === "(") calculator.push("(");
+        if (e.key === ")")  calculator.push(")");
+        if (e.key === "Backspace") calculator.pop();
+        if (e.key === ".") calculator.push(".");
+        if (e.key === "+") calculator.push("+");
+        if (e.key === "-") calculator.push("-");
+        if (e.key === "*") calculator.push("*");
+        if (e.key === "/") calculator.push("/");
+        if (e.key === "Enter") calculator.calculate();
+    });
+});
+
 </script>
 
 <template>
@@ -51,7 +72,7 @@ const calculator = useCalculator();
             <CalculatorButton @click="calculator.push('9')">9</CalculatorButton>
             <CalculatorButton @click="calculator.push('6')">6</CalculatorButton>
             <CalculatorButton @click="calculator.push('3')">3</CalculatorButton>
-            <CalculatorButton @click="calculator.pop()">-.</CalculatorButton>
+            <CalculatorButton @click="calculator.pop()"><i class="fa-solid fa-delete-left"></i></CalculatorButton>
 
             <!-- Fourth column-->
             <CalculatorButton variant="small" @click="calculator.surround('sqrt')">√</CalculatorButton>

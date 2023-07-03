@@ -6,7 +6,7 @@ export const useCalculator = defineStore("calculator", () => {
     const previousInput = reactive([]);
     const input = reactive([]);
     const error = ref(null);
-    const history = reactive([]);
+    const historyInput = reactive([]);
 
     async function executeExpression(expression) {
         try {
@@ -39,7 +39,7 @@ export const useCalculator = defineStore("calculator", () => {
         if (!calculationResult.success) {
             error.value = calculationResult.payload.error;
 
-            await addToHistory(inputSnapshot, calculationResult.payload.error, true);
+            addToHistory(inputSnapshot, calculationResult.payload.error, true);
 
             return;
         }
@@ -49,7 +49,7 @@ export const useCalculator = defineStore("calculator", () => {
         previousInput.push(...inputSnapshot);
         input.push(calculationResult.payload.result);
 
-        await addToHistory(inputSnapshot, calculationResult.payload.result);
+        addToHistory(inputSnapshot, calculationResult.payload.result);
     }
 
 
@@ -130,26 +130,53 @@ export const useCalculator = defineStore("calculator", () => {
             .replace(/([+\-*/^])/g, " $1 ");
     };
 
-    async function addToHistory(input, result, isError = false) {
-        history.push({
+    function addToHistory(input, result, isError = false) {
+        historyInput.push({
             input,
             success: !isError,
             result
         });
 
-        await saveHistory();
+        saveHistory();
     }
 
-    async function saveHistory() {
-        await axios.post('/api/calculator/history', {
-            history
-        });
+    function removeHistoryItem(index) {
+        historyInput.splice(index, 1);
+
+        saveHistory();
+    }
+
+    function saveHistory() {
+        const json = JSON.stringify(historyInput);
+
+        localStorage.setItem("history", json);
+    }
+
+    function loadHistory() {
+        if (historyInput.length) return;
+        const json = localStorage.getItem("history");
+        if (!json) return;
+
+        try {
+            const history = JSON.parse(json);
+            historyInput.push(...history)
+        } catch (e) {
+            console.error(e);
+            // If there's an error, just clear the history
+            localStorage.removeItem("history");
+        }
+    }
+
+    function clearHistory() {
+        historyInput.splice(0, history.length);
+
+        localStorage.removeItem("history");
     }
 
     const formattedPreviousInput = computed(() => formatExpressions(previousInput));
     const formattedInput = computed(() => formatExpressions(input))
     const formattedHistory = computed(() => {
-        return history.map((item) => {
+        return historyInput.map((item) => {
             return {
                 ...item,
                 input: formatExpressions(item.input),
@@ -163,6 +190,9 @@ export const useCalculator = defineStore("calculator", () => {
         pop: popFromInput,
         clear,
         surround,
+        clearHistory,
+        load: loadHistory,
+        removeHistoryItem,
         previousInput: formattedPreviousInput,
         input: formattedInput,
         history: formattedHistory,

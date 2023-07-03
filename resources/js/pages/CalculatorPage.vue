@@ -1,6 +1,6 @@
 <script setup>
 import Calculator from "../components/Calculator.vue";
-import ExpressionHistory from "../components/ExpressionHistory.vue";
+import CalculatorHistory from "../components/CalculatorHistory.vue";
 </script>
 
 <template>
@@ -11,7 +11,7 @@ import ExpressionHistory from "../components/ExpressionHistory.vue";
         </div>
         <div class="relative flex flex-col md:flex-row items-center justify-center">
             <Calculator />
-            <ExpressionHistory />
+            <CalculatorHistory />
         </div>
     </div>
 </template>
