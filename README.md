@@ -12,13 +12,19 @@ Then run these commands in your terminal:
 ```bash
 composer install
 
-# Docker up
+# Docker up.
 ./vendor/bin/sail up -d
+# If you get file permissions problems, read about it just below this block
 ./vendor/bin/sail artisan migrate
 ./vendor/bin/sail npm install
 
 # Serve the front-end
 ./vendor/bin/sail npm run dev
+```
+
+If you get an error with related to file permissions, for **development only** purposes you can simply use this
+```bash
+sudo chmod 777 -R .
 ```
 
 You should now be able to access the application at the URL specified in your terminal.
