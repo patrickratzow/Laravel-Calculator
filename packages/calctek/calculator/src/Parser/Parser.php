@@ -306,6 +306,12 @@ class Parser
         return $identifier;
     }
 
+    /**
+     * Peeks at the next tokens
+     *
+     * @param int $offset
+     * @return Token|null
+     */
     private function peek(int $offset = 1): ?Token
     {
         $position = $this->position + $offset;
@@ -316,6 +322,11 @@ class Parser
         return $this->tokens[$position];
     }
 
+    /**
+     * Moves the cursor to the next token
+     *
+     * @return void
+     */
     private function next(): void
     {
         $this->previousToken = $this->token;
@@ -324,6 +335,12 @@ class Parser
         $this->nextToken = $this->peek();
     }
 
+    /**
+     * Consumes the current token if it matches the given token
+     *
+     * @param Token $token
+     * @return bool If the token was consumed
+     */
     private function consume(Token $token): bool
     {
         if (is_null($this->token)) {
@@ -340,6 +357,12 @@ class Parser
         return true;
     }
 
+    /**
+     * Debugging utility
+     *
+     * @param array $mixin
+     * @return void
+     */
     private function dd(array $mixin = []): void
     {
         dd(array_merge($mixin, [
