@@ -1,6 +1,6 @@
 import './bootstrap';
 
-import { createApp } from 'vue/dist/vue.esm-bundler.js'
+import { createApp } from 'vue'
 import { createPinia } from "pinia";
 import App from './App.vue'
 
