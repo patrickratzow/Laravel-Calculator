@@ -6,7 +6,7 @@ The core of CalcTek Calculator is the calculator core, which is a standalone pac
 # Installation
 I'll assume you have cloned the repository. If you are running on Windows, you will need to use WSL.
 
-Copy the .env.example file to .env, and update the database credentials to match your environment.
+Copy the .env.example file to .env
 
 Then run these commands in your terminal:
 ```bash
@@ -15,7 +15,7 @@ composer install
 # Docker up.
 ./vendor/bin/sail up -d
 # If you get file permissions problems, read about it just below this block
-./vendor/bin/sail artisan migrate
+./vendor/bin/sail artisan key:generate
 ./vendor/bin/sail npm install
 
 # Serve the front-end
