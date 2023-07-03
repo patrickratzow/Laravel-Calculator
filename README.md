@@ -35,6 +35,9 @@ The only tests for this project are in the calculator core package. To run them,
 # Move into the package
 cd ./packages/calctek/calculator
 
+# Run this first time
+composer install
+
 # Run the tests
 ./vendor/bin/phpunit
 ```
