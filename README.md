@@ -2,7 +2,7 @@
 CalcTek Calculator is an API driven calculator service calculator. It is built using Laravel & Vue.js for the back-end & front-end respectively.
 The core of CalcTek Calculator is the calculator core, which is a standalone package that can be found in the packages folder.
 
-![UI](https://catmemes.zip/DjaQmj)
+![UI](https://catmemes.zip/djNBVj)
 # Installation
 I'll assume you have cloned the repository. If you are running on Windows, you will need to use WSL.
 
