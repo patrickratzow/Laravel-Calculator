@@ -21,7 +21,7 @@ composer install
 You should now be able to access the application at the URL specified in your terminal.
 
 # Testing
-The only tests for this project are in the Calculator core package. To run them, you have to cd into the packages/caltek/calculator directory, and run the following command:
+The only tests for this project are in the Calculator core package. To run them, you have to cd into the packages/calctek/calculator directory, and run the following command:
 ```bash
 ./vendor/bin/phpunit
 ```
