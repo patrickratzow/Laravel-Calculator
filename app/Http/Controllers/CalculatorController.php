@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\CalculationResultResource;
-use App\Models\Calculation;
 use CalcTek\Calculator\Contracts\CalculatorService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
