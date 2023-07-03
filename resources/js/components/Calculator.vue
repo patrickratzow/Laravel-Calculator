@@ -6,6 +6,7 @@ import { onMounted } from "vue";
 const calculator = useCalculator();
 
 onMounted(() => {
+    // TODO: Could just add full keyboard support, it's user input so who cares if they put in some weird stuff
     document.addEventListener('keydown', (e) => {
         if (e.Handled) return;
         e.Handled = true;
