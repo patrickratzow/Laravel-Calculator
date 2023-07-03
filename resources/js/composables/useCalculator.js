@@ -168,7 +168,7 @@ export const useCalculator = defineStore("calculator", () => {
     }
 
     function clearHistory() {
-        historyInput.splice(0, history.length);
+        historyInput.splice(0, Math.max(history.length - 1, 0));
 
         localStorage.removeItem("history");
     }
