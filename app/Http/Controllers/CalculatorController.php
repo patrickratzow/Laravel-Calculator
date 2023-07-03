@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CalculationResultResource;
 use App\Models\Calculation;
 use CalcTek\Calculator\Contracts\CalculatorService;
 use Illuminate\Http\JsonResponse;
@@ -17,10 +18,15 @@ class CalculatorController extends Controller
         $this->calculatorService = $calculatorService;
     }
 
+    /**
+     * Returns the result of the calculation
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function index(Request $request): JsonResponse
     {
         $input = $request->query('input');
-
         if (empty($input)) {
             return response()
                 ->json([
@@ -28,14 +34,20 @@ class CalculatorController extends Controller
                 ])
                 ->setStatusCode(400);
         }
+        if (!is_string($input)) {
+            return response()
+                ->json([
+                    'error' => 'Input must be a string',
+                ])
+                ->setStatusCode(400);
+        }
 
         try {
             $result = $this->calculatorService->calculate($input);
+            $resource = CalculationResultResource::make(['result' => $result]);
 
             return response()
-                ->json([
-                    'result' => $result
-                ])
+                ->json($resource)
                 ->setStatusCode(200);
         } catch (Throwable $e) {
             return response()
