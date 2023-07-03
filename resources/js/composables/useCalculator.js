@@ -92,6 +92,17 @@ export const useCalculator = defineStore("calculator", () => {
         input.push(")");
     }
 
+    const formatNumber = (input) => {
+        if (isNaN(input)) return input;
+
+        const number = parseFloat(input);
+        if (isNaN(number)) return input;
+
+        return number.toLocaleString({
+            maximumFractionDigits: 4,
+        });
+    }
+
     const formatExpressions = (expression) => {
         return expression
             // Reduce all sequential numbers into one number
@@ -115,16 +126,7 @@ export const useCalculator = defineStore("calculator", () => {
                 return value;
             })
             // Deal with number formatting
-            .map((value) => {
-                if (isNaN(value)) return value;
-
-                const number = parseFloat(value);
-                if (isNaN(number)) return value;
-
-                return number.toLocaleString({
-                    maximumFractionDigits: 4,
-                });
-            })
+            .map(formatNumber)
             .join("")
             // Add spaces around operations
             .replace(/([+\-*/^])/g, " $1 ");
@@ -179,6 +181,7 @@ export const useCalculator = defineStore("calculator", () => {
         return historyInput.map((item) => {
             return {
                 ...item,
+                result: formatNumber(item.result),
                 input: formatExpressions(item.input),
             }
         });
